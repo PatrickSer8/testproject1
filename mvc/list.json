@@ -1,10 +1,22 @@
 {
     "tests": {
-        "2": {
-            "title": "hola que tala",
-            "field1": "adasdsad",
-            "field2": "asda",
-            "img": "../img/Cfdfdfaptura.PNG"
+        "0": {
+            "title": "Hola",
+            "artist": " que tal",
+            "music": "../music/argue.mp3",
+            "duration": "2:03"
+        },
+        "4": {
+            "title": "ZZZ",
+            "artist": "asdasd",
+            "music": "../music/onlymp3.to - Pokemon Ranger Guardian Signs - Pokemon Pincher Admin Encounter-daimpxnj13c-256k-1656779294209.mp3",
+            "duration": "0:52"
+        },
+        "5": {
+            "title": "AAA",
+            "artist": "asda",
+            "music": "../music/metalpipe.mp3",
+            "duration": "0:02"
         }
     }
 }

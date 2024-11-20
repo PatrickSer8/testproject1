@@ -44,17 +44,14 @@ $error = $_GET["error"];
         <input name="title" type="text" class="form-control" id="inputtitol" placeholder="El nombre de la cancion" required>
     </div>
     <div class="form-group">
-        <label for="field1">Campo 1</label>
-        <input name="field1" type="text" class="form-control" id="filed1" placeholder="Campo 1" required>
+        <label for="artist">Artista</label>
+        <input name="artist" type="text" class="form-control" id="artist" placeholder="El nombre del artista" required>
     </div>
     <div class="form-group">
-        <label for="field2">Campo 2</label>
-        <input name="field2" type="text" class="form-control" id="filed2" placeholder="Campo 2" required>
+        <label for="inputmusica">Musica</label>
+        <input name="music" type="file" class="form-control" id="inputmusica" placeholder="El archivo de la musica" onchange="getAudioDuration(event)" required>
     </div>
-    <div class="form-group">
-        <label for="inputimage">Imagen</label>
-        <input name="img" type="file" class="form-control" id="inputimage" placeholder="Imagen" required>
-    </div>
+    <input type="hidden" id="songduration" name="songduration" value="">
     <button href="/mvc/list.php" type="submit" class="btn btn-primary">Enviar</button>
           </form>
 
@@ -75,3 +72,18 @@ $error = $_GET["error"];
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
   </body>
 </html>
+<script>
+    function getAudioDuration(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const audio = new Audio(URL.createObjectURL(file));
+            audio.onloadedmetadata = function() {
+              const minutes = Math.floor(audio.duration / 60);
+              const seconds = Math.floor(audio.duration % 60);
+              const timef = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+              document.getElementById("songduration").value = timef;
+            };
+        }
+    }
+</script>

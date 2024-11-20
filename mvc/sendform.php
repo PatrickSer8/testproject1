@@ -7,16 +7,19 @@ print_r($_FILES);
 
  print_r(getcwd());
 //stablishes file paths
-$imageFilePath = "../img/" . $_FILES["img"]["name"];
+$musicFilePath = "../music/" . $_FILES["music"]["name"];
 //stores files
-move_uploaded_file($_FILES["img"]["tmp_name"], "../img/" . $_FILES["img"]["name"]);
+move_uploaded_file($_FILES["music"]["tmp_name"], "../music/" . $_FILES["music"]["name"]);
+$songduration = $_POST["songduration"];
+
 
 //store the info in .json
 $data = array(
     "title" => $_POST["title"],
-    "field1" => $_POST["field1"],
-    "field2" => $_POST["field2"],
-    "img" => $imageFilePath
+    "artist" => $_POST["artist"],
+    "music" => $musicFilePath,
+    "duration" => $songduration
+
 );
 
 $jsonData = json_decode(file_get_contents("list.json"), true);

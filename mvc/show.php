@@ -1,13 +1,23 @@
 <?php
 
+session_start();
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 $error = $_GET["error"];
 
+$json_data = file_get_contents('list.json');
+$list = json_decode($json_data, true);
+//filters list alphabeically
+usort($list['tests'], function($a, $b) {
+  return strcasecmp($a['title'], $b['title']);
+});
+
 $test = json_decode($_POST['test'], true); 
     $title = $test['title'];
-    $field1 = $test['field1'];
-    $field2 = $test['field2'];
-    $img = $test['img'];
+    $artist = $test['artist'];
+    $music = $test['music'];
+    $duration = $test['duration'];
+    
+$ord = json_decode($_POST['i'], true); 
 
 ?>
 <!doctype html>
@@ -23,6 +33,19 @@ $test = json_decode($_POST['test'], true);
     <title>Mostrar Test</title>
   </head>
   <body class="d-flex flex-column min-vh-100" style="background-image: url('/img/bg.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">  
+  
+  <!-- tried to implement the next song reproducin when the current one ends, after 5 versions and 3 hours i still dont know why the number sends properly but the values of the song doesnt -->
+  <?php $i = 0; 
+    foreach ($list['tests'] as $test): 
+      $i++;
+      $newsong =  $ord + 1;  
+    if ($i == $newsong) {
+    ?>
+  <form id="songend" action="/mvc/show.php" method="POST">
+                <input type="hidden" name="test" value="<?php echo json_encode($test); ?>">
+                <input type="hidden" name="i" value="<?php echo $i; ?>">
+  </form>
+  <?php } endforeach; ?>
 
   <nav class="navbar navbar-dark justify-content-md-center" style="background-color: #E6E6E6; border: 3px solid black; padding: 20px 0;">
     <div class="d-flex">
@@ -38,17 +61,56 @@ $test = json_decode($_POST['test'], true);
       <div class="d-flex flex-column flex-md-row align-items-center justify-content-between text-center text-md-start">
         <div class="mb-3 mb-md-0" style="max-width: 200px;">
           <h1 class="display-4 mb-1"><?php echo $title; ?></h1>
-          <h3 class="mb-1"><?php echo $field1; ?></h3>
+          <h3 class="mb-1"><?php echo $ord; ?></h3>
         </div>
         <div class="mx-md-5">
-          <img src="<?php echo $img; ?>" alt="img" style="border: 2px solid black; width: 500px; height: 250px; border-radius: 10px;">       
+          <img src="../img/bg.png" alt="img" style="border: 2px solid black; width: 500px; height: 250px; border-radius: 10px;">       
         </div>
         <div class="mb-3 mb-md-0" style="max-width: 200px;">
-          <h1 class="display-4 mb-1">Campo 2: <span id="points-display"> <?php echo $field2; ?></span></h1>
+        <div class="list-group" style="max-height: 380px; overflow-y: auto; padding-right: 10px;">
+  
+        <!-- list Cycles components -->
+        <?php $i = 0; foreach ($list['tests'] as $test): $i++?>
+              
+              <!-- Buton that redirects to form -->
+              <a class="list-group-item list-group-item-action" style="border: 1px solid black; margin-bottom: 10px; border-radius: 10px;">
+              
+              <!-- Info of the tests, also on click on the name it sends to see the test -->
+              <img src="../img/bg.png" alt="Img" style="width: 50px; height: 50px; margin-right: 10px; border-radius: 10px;">
+              <strong style="font-size:x-large; cursor: pointer;" onclick="event.preventDefault(); document.getElementById('Form<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>').submit();" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"
+              ><?php echo $test['title']; ?></strong> por <?php echo $test['artist']; ?> <?php echo $test['duration']; ?>
+              <!--edit and delete buttons -->
+              <p style="cursor: pointer; color: blue; display: inline-block; margin-left: 10px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"
+              onclick="event.preventDefault(); document.getElementById('edit<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>').submit();">Editar</p>
+              <p style="cursor: pointer; color: red; display: inline-block; margin-left: 10px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"
+              onclick="event.preventDefault(); document.getElementById('delete<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>').submit();">Eliminar</p>
+              </a>
+              <!-- Form that sends the info to -->
+              <form id="Form<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>" action="/mvc/show.php" method="POST" style="display: none;">
+                <input type="hidden" name="test" value='<?php echo json_encode($test); ?>'>
+                <input type="hidden" name="i" value='<?php echo $i; ?>'>
+              </form>
+              <!-- Form that deletes song -->
+              <form id="delete<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>" action="/mvc/delete.php" method="POST" style="display: none;">
+                <input type="hidden" name="test" value='<?php echo json_encode($test); ?>'>
+              </form>
+              <!-- Form that edits song -->
+              <form id="edit<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>" action="/mvc/editForm.php" method="POST" style="display: none;">
+                <input type="hidden" name="test" value='<?php echo json_encode($test); ?>'>
+              </form>
+            <?php endforeach; ?>        
         </div>
+          </div>
       </div> 
-      <h2 class="mb-1">Patata!</h2>
-      </div> 
+      <h2 class="mb-1"><?php echo $artist; ?></h2>
+      </div>
+      <div>
+                <span id="current-time">0:00</span> / <span id="cancion-duration"><?php echo $duration; ?></span>
+            </div>
+            <div style="width:80%; height: 6px; background-color: #a3e6ff; margin-left: 10%; border: 1px solid blue;" id="cancion-progress-conten">
+                <div style="height: 100%; background-color: #0044ff; width: 0;" id="cancion-progress"></div>
+            </div>
+      </div>  
     </div>
   </div>
 
@@ -64,3 +126,47 @@ $test = json_decode($_POST['test'], true);
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
   </body>
 </html>
+
+<script>
+  var audio = new Audio("<?php echo $music; ?>");
+  var playrepeat = "yes";
+  //function to play the song when the user clicks(browser dont allow for the song to start automatically)
+  function playsong() {
+    if(playrepeat == "yes") {
+    audio.play();
+    //tried to guess what the muting function is called, cant remember
+    playrepeat = "no";} else {audio.mute();}}
+
+    document.addEventListener('click',playsong)
+  //determiningn wich song comes later
+  
+  //progress bar
+  audio.addEventListener('timeupdate', () => {
+    const currentTime = audio.currentTime;
+    const duration = audio.duration;
+    const progress = (currentTime / duration) * 100;
+
+    const progressBar = document.getElementById('cancion-progress');
+    progressBar.style.width = progress + '%';
+
+    const currentTimeDisplay = document.getElementById('current-time');
+    const durationDisplay = document.getElementById('cancion-duration');
+    currentTimeDisplay.textContent = formatTime(currentTime);
+    durationDisplay.textContent = formatTime(duration);
+    //when the song ends it loads next song
+    
+    if (currentTime >= duration) {
+     
+        event.preventDefault(); 
+        document.getElementById('songend').submit();
+      
+  }
+});
+//format the duration in minutes
+function formatTime(timeInSeconds) {
+    const minutes = Math.floor(timeInSeconds / 60);
+    const seconds = Math.floor(timeInSeconds % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+}
+
+</script>

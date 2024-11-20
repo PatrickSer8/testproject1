@@ -1,34 +1,28 @@
 <pre>
 <?php
 
-$jsonData = json_decode(file_get_contents("playlist.json"), true);
-$song = json_decode($_POST['song'], true); 
-    $songTitle = $song['title'];
-    $songArtist = $song['artist'];
-    $songMusic = $song['music'];
-    $songGame = $song['game'];
-    $songDuration = $song['duration'];
-    $songImg = $song['img'];
+$jsonData = json_decode(file_get_contents("list.json"), true);
+$test = json_decode($_POST['test'], true); 
+    $title = $test['title'];
+    $artist = $test['artist'];
+    $music = $test['music'];
+    $duration = $test['duration'];
     //deletes the files
-    unlink($songMusic);
-    unlink($songGame);
-    unlink($songImg);
+    unlink($music);
     //finds the data and deletes it from the json file
-    foreach ($jsonData['songs'] as $index => $entry) {
+    foreach ($jsonData['tests'] as $index => $entry) {
         if (
-            $entry['title'] === $songTitle &&
-            $entry['artist'] === $songArtist &&
-            $entry['music'] === $songMusic &&
-            $entry['game'] === $songGame &&
-            $entry['duration'] === $songDuration &&
-            $entry['img'] === $songImg
+            $entry['title'] === $title &&
+            $entry['artist'] === $artist &&
+            $entry['music'] === $music &&
+            $entry['duration'] === $duration           
         ) {
-            unset($jsonData['songs'][$index]);
+            unset($jsonData['tests'][$index]);
             break; 
         }
     }
-    file_put_contents("playlist.json", json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-header("Location: songlist.php");
+    file_put_contents("list.json", json_encode($jsonData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+header("Location: list.php");
 exit;
 
 ?>

@@ -42,31 +42,32 @@ usort($list['tests'], function($a, $b) {
           <div class="list-group" style="max-height: 344px; overflow-y: auto; padding-right: 10px;">
             
           <!-- list Cycles components -->
-            <?php foreach ($list['tests'] as $test): ?>
+            <?php $i = 0; foreach ($list['tests'] as $test): $i++?>
               
               <!-- Buton that redirects to form -->
               <a class="list-group-item list-group-item-action" style="border: 1px solid black; margin-bottom: 10px; border-radius: 10px;">
               
               <!-- Info of the tests, also on click on the name it sends to see the test -->
-              <img src="<?php echo $test['img']; ?>" alt="Img" style="width: 50px; height: 50px; margin-right: 10px; border-radius: 10px;">
-              <strong style="font-size:x-large; cursor: pointer;" onclick="event.preventDefault(); document.getElementById('Form<?php echo $test['title']; ?><?php echo $test['field1']; ?><?php echo $test['field2']; ?><?php echo $test['img']; ?>').submit();" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"
-              ><?php echo $test['title']; ?></strong> | <?php echo $test['field1']; ?> <?php echo $test['field2']; ?>
+              <img src="../img/bg.png" alt="Img" style="width: 50px; height: 50px; margin-right: 10px; border-radius: 10px;">
+              <strong style="font-size:x-large; cursor: pointer;" onclick="event.preventDefault(); document.getElementById('Form<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>').submit();" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"
+              ><?php echo $test['title']; ?></strong> por <?php echo $test['artist']; ?> <?php echo $test['duration']; ?>
               <!--edit and delete buttons -->
               <p style="cursor: pointer; color: blue; display: inline-block; margin-left: 10px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"
-              onclick="event.preventDefault(); document.getElementById('edit<?php echo $test['title']; ?><?php echo $test['field1']; ?><?php echo $test['field2']; ?><?php echo $test['img']; ?>').submit();">Editar</p>
+              onclick="event.preventDefault(); document.getElementById('edit<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>').submit();">Editar</p>
               <p style="cursor: pointer; color: red; display: inline-block; margin-left: 10px;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'"
-              onclick="event.preventDefault(); document.getElementById('delete<?php echo $test['title']; ?><?php echo $test['field1']; ?><?php echo $test['field2']; ?><?php echo $test['img']; ?>').submit();">Eliminar</p>
+              onclick="event.preventDefault(); document.getElementById('delete<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>').submit();">Eliminar</p>
               </a>
               <!-- Form that sends the info to -->
-              <form id="Form<?php echo $test['title']; ?><?php echo $test['field1']; ?><?php echo $test['field2']; ?><?php echo $test['img']; ?>" action="/mvc/show.php" method="POST" style="display: none;">
+              <form id="Form<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>" action="/mvc/show.php" method="POST" style="display: none;">
                 <input type="hidden" name="test" value='<?php echo json_encode($test); ?>'>
+                <input type="hidden" name="i" value='<?php echo $i; ?>'>
               </form>
               <!-- Form that deletes song -->
-              <form id="delete<?php echo $test['title']; ?><?php echo $test['field1']; ?><?php echo $test['field2']; ?><?php echo $test['img']; ?>" action="/mvc/delete.php" method="POST" style="display: none;">
+              <form id="delete<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>" action="/mvc/delete.php" method="POST" style="display: none;">
                 <input type="hidden" name="test" value='<?php echo json_encode($test); ?>'>
               </form>
               <!-- Form that edits song -->
-              <form id="edit<?php echo $test['title']; ?><?php echo $test['field1']; ?><?php echo $test['field2']; ?><?php echo $test['img']; ?>" action="/mvc/editForm.php" method="POST" style="display: none;">
+              <form id="edit<?php echo $test['title']; ?><?php echo $test['artist']; ?><?php echo $test['music']; ?><?php echo $test['duration']; ?>" action="/mvc/editForm.php" method="POST" style="display: none;">
                 <input type="hidden" name="test" value='<?php echo json_encode($test); ?>'>
               </form>
             <?php endforeach; ?>
